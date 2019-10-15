@@ -121,26 +121,29 @@ void myTIM2_Init()
 	TIM2->CR1 = ((uint16_t)0x008C);
 
 	/* Set clock prescaler value */
-	TIM2->PSC = myTIM2_PRESCALER;
+	TIM2->PSC = myTIM2_PRESCALER; /* given */
 	/* Set auto-reloaded delay */
-	TIM2->ARR = myTIM2_PERIOD;
+	TIM2->ARR = myTIM2_PERIOD; /* given */
 
 	/* Update timer registers */
 	// Relevant register: TIM2->EGR
 	TIM2->EGR = ((uint16_t)0x0001);
 
 	/* Assign TIM2 interrupt priority = 0 in NVIC */
-	NVIC_SetPriority(TIM2_IRQn, 0);
 	// Relevant register: NVIC->IP[3], or use NVIC_SetPriority
+	NVIC_SetPriority(TIM2_IRQn, 0);
 
 	/* Enable TIM2 interrupts in NVIC */
-	NVIC_EnableIRQ(TIM2_IRQn);
 	// Relevant register: NVIC->ISER[0], or use NVIC_EnableIRQ
+	NVIC_EnableIRQ(TIM2_IRQn);
 
 	/* Enable update interrupt generation */
-	TIM2->DIER |= TIM_DIER_UIE;
 	// Relevant register: TIM2->DIER
-	TIM2->CR1 |= TIM_CR1_CEN;
+	TIM2->DIER |= TIM_DIER_UIE;
+
+	/* not sure if we should do it this way but we could */
+	/* TIM2->CR1 |= TIM_CR1_CEN; */
+
 	trace_printf("myTIM2_Init end\n");
 
 }
@@ -172,7 +175,7 @@ void myEXTI_Init()
 
 }
 
-
+/* --------------Do Not Mess With This-----------*/
 /* This handler is declared in system/src/cmsis/vectors_stm32f0xx.c */
 void TIM2_IRQHandler()
 {

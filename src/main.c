@@ -11,10 +11,15 @@
 // See "system/include/cmsis/stm32f0xx.h" for register/bit definitions.
 // See "system/src/cmsis/vectors_stm32f0xx.c" for handler declarations.
 // ----------------------------------------------------------------------------
-
+#define STM32F051
 #include <stdio.h>
 #include "diag/Trace.h"
 #include "cmsis/cmsis_device.h"
+
+
+/* these are used to make lsp work better */
+/* #include "../system/include/cmsis/stm32f0xx.h" */
+/* #include "../include/diag/Trace.h" */
 
 // ----------------------------------------------------------------------------
 //
@@ -203,13 +208,12 @@ void EXTI0_1_IRQHandler()
 	trace_printf("EXTI0_1_IRQHandler\n");
 
 	// Your local variables...
-	edgeCount ++;
 	/* Check if EXTI1 interrupt pending flag is indeed set */
 	if ((EXTI->PR & EXTI_PR_PR1) != 0)
 	{
 		// 1. If this is the first edge:
 
-		uint16_t timerEnable = (TIM2->CR1 & TIM_CR1_CEN);
+		/* uint16_t timerEnable = (TIM2->CR1 & TIM_CR1_CEN); */
 		//if( first edge )
 		//{
 		if(edgeCount == 1){

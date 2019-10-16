@@ -16,11 +16,6 @@
 #include "diag/Trace.h"
 #include "cmsis/cmsis_device.h"
 
-
-/* these are used to make lsp work better */
-/* #include "../system/include/cmsis/stm32f0xx.h" */
-/* #include "../include/diag/Trace.h" */
-
 // ----------------------------------------------------------------------------
 //
 // STM32F0 empty sample (trace via $(trace)).
@@ -216,6 +211,8 @@ void EXTI0_1_IRQHandler()
 		/* uint16_t timerEnable = (TIM2->CR1 & TIM_CR1_CEN); */
 		//if( first edge )
 		//{
+
+		//TRY to just toggl it instead of edgeCount
 		if(edgeCount == 1){
 
 			TIM2->CNT = 0x00000000;//	- Clear count register (TIM2->CNT).

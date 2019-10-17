@@ -48,10 +48,7 @@ void myEXTI_Init(void);
 
 // Your global variables...
 
-uint16_t edgeCount = 0;
-
-float signalFreq = 0.0;
-float signalPer = 0.0;
+uint16_t edge_flag = 0;
 
 /*
 volatile uint32_t AHBENR;
@@ -206,39 +203,33 @@ void EXTI0_1_IRQHandler()
 	/* Check if EXTI1 interrupt pending flag is indeed set */
 	if ((EXTI->PR & EXTI_PR_PR1) != 0)
 	{
-		// 1. If this is the first edge:
-
-		/* uint16_t timerEnable = (TIM2->CR1 & TIM_CR1_CEN); */
-		//if( first edge )
-		//{
-
-		//TRY to just toggl it instead of edgeCount
-		if(edgeCount == 1){
-
+		// 1. If this is the first edge: (aka timer done)
+		if(edge_flag == 0){
+			edge_flag++;
 			TIM2->CNT = 0x00000000;//	- Clear count register (TIM2->CNT).
 			TIM2->CR1 |= TIM_CR1_CEN;//	- Start timer (TIM2->CR1).
-		}
-		else{
-		//    Else (this is the second edge):
-		//	- Stop timer (TIM2->CR1).
-			TIM2->CR1 &= ~(TIM_CR1_CEN);
-		//	- Read out count register (TIM2->CNT).
-			uint32_t counter = TIM2->CNT;
-		//	- Calculate signal period and frequency.
-			signalFreq = ((float)SystemCoreClock)/counter;
-			signalPer = 1/signalFreq;
-		//	- Print calculated values to the console.
-			trace_printf("Signal Freq:   %f Hz\n", signalFreq);
-			trace_printf("Signal Period: %f s\n", signalPer);
-		//	  NOTE: Function trace_printf does not work
-		//	  with floating-point numbers: you must use
-		//	  "unsigned int" type to print your signal
-		//	  period and frequency.
-		//
-		}
+			/* ^ this may need to be TIM2->CR1 = TIM_CR1_CEN */
+			uint16_t running = (TIM2->CR1 & TIM_CR1_CEN); // - Set Running
+		}else{ //    Else (this is the second edge):
 
+			TIM2->CR1 &= ~(TIM_CR1_CEN); //	- Stop timer (TIM2->CR1).
+			uint32_t counter = TIM2->CNT; //	- Read out count register (TIM2->CNT).
+
+			uint32_t frequency = SystemCoreClock/TIM2->CNT;
+			uint32_t period = 1000/frequency;
+
+			//	  NOTE: Function trace_printf does not work
+			//	  with floating-point numbers: you must use
+			//	  "unsigned int" type to print your signal
+			//	  period and frequency.
+			/* need to use uint32_t*/
+			trace_printf("clock cycles = %d\n", TIM2->CNT);	// print count
+			trace_printf("signal period = %d ns\n", period);// print period
+			trace_printf("frequency: %d Hz,\n", frequency);	// print frequency
+
+			edge_flag = 0; // allow to be ran again
+		}
 		// 2. Clear EXTI1 interrupt pending flag (EXTI->PR).
-		//
 		EXTI->PR |= EXTI_PR_PR1;
 	}
 	trace_printf("EXTI0_1_IRQHandler end\n");

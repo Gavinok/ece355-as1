@@ -138,9 +138,6 @@ void myTIM2_Init()
 	// Relevant register: TIM2->DIER
 	TIM2->DIER |= TIM_DIER_UIE;
 
-	/* not sure if we should do it this way but we could */
-	/* TIM2->CR1 |= TIM_CR1_CEN; */
-
 	trace_printf("myTIM2_Init end\n");
 
 }

@@ -205,7 +205,7 @@ void EXTI0_1_IRQHandler()
 	{
 		// 1. If this is the first edge: (aka timer done)
 		if(edge_flag == 0){
-			edge_flag++;
+			edge_flag = 1;
 			TIM2->CNT = 0x00000000;//	- Clear count register (TIM2->CNT).
 			TIM2->CR1 |= TIM_CR1_CEN;//	- Start timer (TIM2->CR1).
 			/* ^ this may need to be TIM2->CR1 = TIM_CR1_CEN */

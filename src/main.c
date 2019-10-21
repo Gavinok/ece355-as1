@@ -86,7 +86,6 @@ main(int argc, char* argv[])
 
 void myGPIOA_Init()
 {
-	//trace_printf("myGPIOA_Init\n");
 
 	/* Enable clock for GPIOA peripheral */
 	// Relevant register: RCC->AHBENR
@@ -99,14 +98,12 @@ void myGPIOA_Init()
 	/* Ensure no pull-up/pull-down for PA1 */
 	// Relevant register: GPIOA->PUPDR
 	GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPDR1);
-	//trace_printf("myGPIOA_Init end\n");
 
 }
 
 
 void myTIM2_Init()
 {
-	//trace_printf("myTIM2_Init\n");
 
 	/* Enable clock for TIM2 peripheral */
 	// Relevant register: RCC->APB1ENR
@@ -138,14 +135,12 @@ void myTIM2_Init()
 	// Relevant register: TIM2->DIER
 	TIM2->DIER |= TIM_DIER_UIE;
 
-	//trace_printf("myTIM2_Init end\n");
 
 }
 
 
 void myEXTI_Init()
 {
-	//trace_printf("myEXTI_Init\n");
 	/* Map EXTI1 line to PA1 */
 	// Relevant register: SYSCFG->EXTICR[0]
 	SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI1_PA;
@@ -164,8 +159,7 @@ void myEXTI_Init()
 
 	/* Enable EXTI1 interrupts in NVIC */
 	// Relevant register: NVIC->ISER[0], or use NVIC_EnableIRQ
-	  NVIC_EnableIRQ(EXTI0_1_IRQn);
-		//trace_printf("myEXTI_Init end\n");
+	  NVIC_EnableIRQ(EXTI0_1_IRQn;
 
 }
 
@@ -194,7 +188,6 @@ void TIM2_IRQHandler()
 /* This handler is declared in system/src/cmsis/vectors_stm32f0xx.c */
 void EXTI0_1_IRQHandler()
 {
-	//trace_printf("EXTI0_1_IRQHandler\n");
 	// Your local variables...
 	/* Check if EXTI1 interrupt pending flag is indeed set */
 	if ((EXTI->PR & EXTI_PR_PR1) != 0)
@@ -205,9 +198,6 @@ void EXTI0_1_IRQHandler()
 			TIM2->CNT = (uint16_t)0x0;//	- Clear count register (TIM2->CNT).
 			//TIM2->CR1 |= TIM_CR1_CEN;//	- Start timer (TIM2->CR1).
 			TIM2->CR1 = TIM_CR1_CEN;//	- Start timer (TIM2->CR1).
-			/* ^ this may need to be TIM2->CR1 = TIM_CR1_CEN */
-			//uint16_t running = (TIM2->CR1 & TIM_CR1_CEN); // - Set Running
-		//	trace_printf("clock cycles = %d\n", TIM2->CNT);	// print count
 
 		}
 		else{ //    Else (this is the second edge):
